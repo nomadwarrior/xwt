@@ -74,6 +74,7 @@ namespace Xwt
 		bool pendingReallocation;
 		Image icon;
 		WindowFrame transientFor;
+		protected bool owned;
 		
 		protected class WindowBackendHost: BackendHost<WindowFrame,IWindowFrameBackend>, IWindowFrameEventSink
 		{
@@ -83,7 +84,7 @@ namespace Xwt
 				base.OnBackendCreated ();
 				Parent.location = Backend.Bounds.Location;
 				Parent.size = Backend.Bounds.Size;
-				Backend.EnableEvent (WindowFrameEvent.BoundsChanged);
+				OnEnableEvent (WindowFrameEvent.BoundsChanged);
 			}
 			
 			public void OnBoundsChanged (Rectangle bounds)
@@ -137,7 +138,7 @@ namespace Xwt
 			
 			// Don't dispose the backend if this object is being finalized
 			// The backend has to handle the finalizing on its own
-			if (disposing && BackendHost.BackendCreated)
+			if (disposing && BackendHost.BackendCreated && owned)
 				Backend.Dispose ();
 		}
 		
